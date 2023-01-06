@@ -4,7 +4,6 @@ from pprint import pprint
 from datetime import datetime
 import time
 from progress.bar import IncrementalBar
-# pip freeze > requirements.txt
 
 
 class ClassVK:
@@ -31,8 +30,6 @@ class ClassVK:
                   'photo_sizes': 1,
                   'count': count}
         photos = requests.get(url=self.url, params={**self.params, **params})
-        # print(photos.status_code)
-        # print(photos)
         return photos.json()
 
     def user(self):
@@ -64,7 +61,6 @@ class ClassVK:
                     progress_vk.next()
                     time.sleep(0.01)
                     break
-        # pprint(large_photos)
         progress_vk.finish()
         return large_photos
 
@@ -92,7 +88,6 @@ class YaUploader:
         }
         headers = self.get_headers()
         link = requests.get(url=upload_url, params=params, headers=headers)
-        # print(link)
         return link.json()
 
     def upload(self, file_upload_path, file_list, quantity=5):
@@ -110,10 +105,7 @@ class YaUploader:
                     file_name = str(file['likes']['count']) + '_' + date_load + '.jpg'
                 else:
                     file_name = str(file['likes']['count']) + '.jpg'
-                # print(file_upload_path)
-                # print(file_name)
                 folder_path = file_upload_path + file_name
-                # print(folder_path)
                 href = self._get_link(folder_path)['href']
                 response = requests.put(href, data=requests.get(file['url']))
                 response.raise_for_status()
@@ -142,16 +134,10 @@ if __name__ == '__main__':
         token_vk = file_token.read()
     with open('Yandex.txt', 'r', encoding='utf8') as file_token_ya:
         token_yandex = file_token_ya.read()
+
     vk = ClassVK(token=token_vk, owner_id=user_id)
-    # photos = vk.get_photos()
-    # print(len(photos['response']['items']))
-    # profile = vk.user()
-    # pprint(profile)
-    # print(vk.token)
     photos_upload = vk.large_photos(album_key=album_name)
     largest_photo = vk.sort_size(photos_upload)
-    # print('largest_photo =', largest_photo)
-    # print('largest_photo =', len(largest_photo))
     url_ya = 'https://cloud-api.yandex.net/v1/disk/resources'
     path_to_file = 'VK_Downloads/'
     uploader = YaUploader(token=token_yandex, url=url_ya)
@@ -159,4 +145,3 @@ if __name__ == '__main__':
     pprint(logs)
     with open(file='logs.json', mode='w', encoding='utf8') as result_logs:
         result_logs.write(str(logs))
-        # result_logs.writelines(logs)
